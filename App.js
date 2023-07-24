@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome"; 
 
 const App = () => {
-
+ 
   const click = () => {
     console.log("click");
   }
