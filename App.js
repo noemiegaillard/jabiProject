@@ -1,10 +1,39 @@
-import React from "react";
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Modal,
+  TouchableOpacity,
+  TextInput,
+  Button,
+} from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import Task from "./Task.js";
 
 const App = () => {
-  const newTask = () => {
-    console.log("click");
+  const [modalVisible, setModalVisible] = useState(false);
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [date, setDate] = useState("");
+
+  const openModal = () => {
+    setModalVisible(true);
+  };
+  const handleSaveTask = () => {
+    // Add your logic to save the task with the entered data
+    // For example, you can create a new object and add it to the DATA array
+
+    const newTask = {
+      id: String(Math.random()), // Generate a random ID (you can use a proper ID generation logic)
+      title: title,
+      description: description,
+      date: date,
+    };
+
+    DATA.push(newTask); // Assuming DATA is an array that holds your tasks
+    setModalVisible(false);
   };
 
   const DATA = [
@@ -12,50 +41,52 @@ const App = () => {
       id: "1",
       title: "1 Item",
       description: "bonjour ceci est une description du texte blablabla",
+      date: "jeudi 3 aout",
     },
     {
       id: "2",
       title: "2 Item",
       description: "bonjour ceci est une description du texte blablabla",
+      date: "jeudi 3 aout",
     },
     {
       id: "3",
       title: "3 Item",
       description: "bonjour ceci est une description du texte blablabla",
+      date: "jeudi 3 aout",
     },
     {
       id: "4",
       title: "4 Item",
       description: "bonjour ceci est une description du texte blablabla",
+      date: "jeudi 3 aout",
     },
     {
       id: "5",
       title: "5 Item",
       description: "bonjour ceci est une description du texte blablabla",
+      date: "jeudi 3 aout",
     },
     {
       id: "6",
       title: "6 Item",
       description: "bonjour ceci est une description du texte blablabla",
+      date: "jeudi 3 aout",
     },
     {
       id: "7",
       title: "7 Item",
       description: "bonjour ceci est une description du texte blablabla",
+      date: "jeudi 3 aout",
     },
     {
       id: "8",
       title: "8 Item",
-      description: "bonjour ceci est une description du texte blablabla",
+      description:
+        "bonjour ceci est une \n description du texte blablablablablablablablablablablablablablabla",
+      date: "jeudi 3 aout",
     },
   ];
-
-  const Item = ({ title, description }) => (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.description}>{description}</Text>
-    </View>
-  );
 
   return (
     <View style={styles.container}>
@@ -66,19 +97,56 @@ const App = () => {
         <FlatList
           data={DATA}
           renderItem={({ item }) => (
-            <Item title={item.title} description={item.description} />
+            <Task
+              title={item.title}
+              description={item.description}
+              date={item.date}
+            />
           )}
           keyExtractor={(item) => item.id}
         />
-        <View style={styles.circle} >
+        <TouchableOpacity style={styles.circle} onPress={openModal}>
           <FontAwesome
             name="pencil"
             size={24}
             color="white"
             style={styles.icon}
-            onPress={newTask}
           />
+        </TouchableOpacity>
+        <View>
+        <Modal visible={modalVisible} animationType='fade' >
+          <View style={styles.modalContainer}>
+            {/* Your form or inputs */}
+            <TextInput
+              placeholder="Title"
+              value={title}
+              onChangeText={(text) => setTitle(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Description"
+              value={description}
+              onChangeText={(text) => setDescription(text)}
+              style={styles.input}
+            />
+            <TextInput
+              placeholder="Date"
+              value={date}
+              onChangeText={(text) => setDate(text)}
+              style={styles.input}
+            />
+
+            {/* Save button */}
+            <View style={styles.buttonsContainer}>
+            <TouchableOpacity onPress={() => setModalVisible(false)}>
+        <Text style={styles.retourText}>Retour</Text>
+      </TouchableOpacity>
+              <Button title="Save" onPress={handleSaveTask} />
+            </View>
+          </View>
+        </Modal>
         </View>
+        
       </View>
     </View>
   );
@@ -87,12 +155,12 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(78,182,153,0.2)", //vert clair
+    backgroundColor: "rgba(78,182,153,0.4)", //vert clair
   },
-  description: {
-    color: "#510059",
-    fontSize: 12,
+  descriptionContainer: {
+    alignSelf: "flex-end", // Alignement de la description au bas à droite
   },
+
   appBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -112,30 +180,28 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background
+  },
+
+  // Styles for the input fields in the modal
+  input: {
+    width: 200,
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 5,
+    padding: 10,
+    marginBottom: 10,
+  },
   appBarTitle: {
     fontSize: 25,
     marginTop: 15,
     fontWeight: "normal",
     color: "#fff", // blanc
-  },
-  item: {
-    backgroundColor: "rgba(92,179,154,1)", //vert foncé
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 20,
-    width: 330,
-    height: 100,
-    borderRadius: "10",
-    shadowColor: 'black',
-    shadowOffset: { width: 7, height: 8 }, // Offset de l'ombre (décalage)
-    shadowOpacity: 0.4, // Opacité de l'ombre (0 - 1)
-    shadowRadius: 8, // Rayon de l'ombre (taille de l'effet)
-    elevation: 4,
-  },
-  title: {
-    color: "#510059",
-    fontSize: 20,
-    fontWeight: "500",
   },
   icon: {
     position: "absolute",
@@ -152,6 +218,19 @@ const styles = StyleSheet.create({
     color: "rgba(78,182,153,1)",
     fontSize: 24,
     fontWeight: "normal",
+  },
+  buttonsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+
+  // Styles for the "Retour" text
+  retourText: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginRight: 20,
   },
 });
 
