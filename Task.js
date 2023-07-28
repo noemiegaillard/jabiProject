@@ -3,14 +3,8 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
-  Button,
-  TextInput,
-  Pressable,
-  Platform,
-  TouchableOpacity,
 } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
+import colors from "./assets/themes.js";
 
 const Task = ({ title, description, date }) => {
   return (
@@ -26,32 +20,32 @@ const Task = ({ title, description, date }) => {
 
 const styles = StyleSheet.create({
   date: {
-    color: "#3B25D5",
+    color: colors.blue,
     fontSize: 14,
     fontWeight: "600",
     textAlign: "right",
   },
   description: {
-    color: "#510059",
+    color: colors.purpleDark,
     fontSize: 12,
     fontStyle: "italic",
   },
   item: {
-    backgroundColor: "rgba(92,179,154,1)", //vert foncé
+    backgroundColor: colors.watergreen, //vert foncé
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 20,
     width: 330,
     height: 100,
     borderRadius: "10",
-    shadowColor: "black",
-    shadowOffset: { width: 7, height: 8 }, // Offset de l'ombre (décalage)
-    shadowOpacity: 0.4, // Opacité de l'ombre (0 - 1)
+    shadowColor: colors.watergreen,
+    shadowOffset: { width: 2, height: 8 }, // Offset de l'ombre (décalage)
+    shadowOpacity: 0.9, // Opacité de l'ombre (0 - 1)
     shadowRadius: 8, // Rayon de l'ombre (taille de l'effet)
     elevation: 4,
   },
   title: {
-    color: "#510059",
+    color: colors.purpleDark,
     fontSize: 20,
     fontWeight: "500",
   }

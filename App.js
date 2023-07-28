@@ -10,9 +10,14 @@ import {
   Button,
 } from "react-native";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Task from "./Task.js";
+import Task from "./Task";
+import colors from "./assets/themes.js";
+import { useCustomFonts } from './assets/fonts.js';
+
+
 
 const App = () => {
+
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -21,73 +26,34 @@ const App = () => {
   const openModal = () => {
     setModalVisible(true);
   };
-  const handleSaveTask = () => {
-    // Add your logic to save the task with the entered data
-    // For example, you can create a new object and add it to the DATA array
 
+  const handleSaveTask = () => {
+    if (
+      title.trim() === "" ||
+      description.trim() === "" ||
+      date.trim() === ""
+    ) {
+      alert("You have one field or more that isn't been fill.");
+      return;
+    }
     const newTask = {
       id: String(Math.random()), // Generate a random ID (you can use a proper ID generation logic)
       title: title,
       description: description,
       date: date,
     };
-
-    DATA.push(newTask); // Assuming DATA is an array that holds your tasks
+    setTasks((prevTasks) => [...prevTasks, newTask]);
     setModalVisible(false);
+    setTitle("");
+    setDescription("");
+    setDate("");
   };
+  const [Tasks, setTasks] = useState([]);
+  const fontsLoaded = useCustomFonts();
 
-  const DATA = [
-    {
-      id: "1",
-      title: "1 Item",
-      description: "bonjour ceci est une description du texte blablabla",
-      date: "jeudi 3 aout",
-    },
-    {
-      id: "2",
-      title: "2 Item",
-      description: "bonjour ceci est une description du texte blablabla",
-      date: "jeudi 3 aout",
-    },
-    {
-      id: "3",
-      title: "3 Item",
-      description: "bonjour ceci est une description du texte blablabla",
-      date: "jeudi 3 aout",
-    },
-    {
-      id: "4",
-      title: "4 Item",
-      description: "bonjour ceci est une description du texte blablabla",
-      date: "jeudi 3 aout",
-    },
-    {
-      id: "5",
-      title: "5 Item",
-      description: "bonjour ceci est une description du texte blablabla",
-      date: "jeudi 3 aout",
-    },
-    {
-      id: "6",
-      title: "6 Item",
-      description: "bonjour ceci est une description du texte blablabla",
-      date: "jeudi 3 aout",
-    },
-    {
-      id: "7",
-      title: "7 Item",
-      description: "bonjour ceci est une description du texte blablabla",
-      date: "jeudi 3 aout",
-    },
-    {
-      id: "8",
-      title: "8 Item",
-      description:
-        "bonjour ceci est une \n description du texte blablablablablablablablablablablablablablabla",
-      date: "jeudi 3 aout",
-    },
-  ];
-
+  if (!fontsLoaded) {
+    return <></>;
+  }
   return (
     <View style={styles.container}>
       <View style={styles.appBar}>
@@ -95,7 +61,7 @@ const App = () => {
       </View>
       <View style={styles.content}>
         <FlatList
-          data={DATA}
+          data={Tasks}
           renderItem={({ item }) => (
             <Task
               title={item.title}
@@ -105,48 +71,69 @@ const App = () => {
           )}
           keyExtractor={(item) => item.id}
         />
-        <TouchableOpacity style={styles.circle} onPress={openModal}>
-          <FontAwesome
-            name="pencil"
-            size={24}
-            color="white"
-            style={styles.icon}
-          />
-        </TouchableOpacity>
+        {!modalVisible && (
+          <TouchableOpacity style={styles.circle} onPress={openModal}>
+            <FontAwesome
+              name="pencil"
+              size={24}
+              color="white"
+              style={styles.icon}
+            />
+          </TouchableOpacity>
+        )}
         <View>
-        <Modal visible={modalVisible} animationType='fade' >
-          <View style={styles.modalContainer}>
-            {/* Your form or inputs */}
-            <TextInput
-              placeholder="Title"
-              value={title}
-              onChangeText={(text) => setTitle(text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Description"
-              value={description}
-              onChangeText={(text) => setDescription(text)}
-              style={styles.input}
-            />
-            <TextInput
-              placeholder="Date"
-              value={date}
-              onChangeText={(text) => setDate(text)}
-              style={styles.input}
-            />
+          <Modal
+            visible={modalVisible}
+            animationType="slide"
+            transparent={true}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalContent}>
+                <Text style={styles.modalTitle}>Create a new Task : </Text>
 
-            {/* Save button */}
-            <View style={styles.buttonsContainer}>
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
-        <Text style={styles.retourText}>Retour</Text>
-      </TouchableOpacity>
-              <Button title="Save" onPress={handleSaveTask} />
+                {/* Your form or inputs */}
+                <TextInput
+                  placeholder="Title"
+                  color={colors.whitebackground}
+                  value={title}
+                  onChangeText={(text) => setTitle(text)}
+                  style={styles.input}
+                />
+                <TextInput
+                  color={colors.whitebackground}
+                  placeholder="Description"
+                  value={description}
+                  onChangeText={(text) => setDescription(text)}
+                  style={styles.input}
+                />
+                <TextInput
+                  color={colors.whitebackground}
+                  placeholder="Date"
+                  value={date}
+                  onChangeText={(text) => setDate(text)}
+                  style={styles.input}
+                />
+
+                {/* Save button */}
+                <View style={styles.buttonsContainer}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setModalVisible(false);
+                      setTitle("");
+                      setDescription("");
+                      setDate("");
+                    }}
+                  >
+                    <Text style={styles.buttonText}>Retour</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handleSaveTask}>
+                    <Text style={styles.buttonText}>Save</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
-          </View>
-        </Modal>
+          </Modal>
         </View>
-        
       </View>
     </View>
   );
@@ -155,7 +142,7 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(78,182,153,0.4)", //vert clair
+    backgroundColor: colors.whitebackground, //vert clair
   },
   descriptionContainer: {
     alignSelf: "flex-end", // Alignement de la description au bas à droite
@@ -164,7 +151,7 @@ const styles = StyleSheet.create({
   appBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#510059", //violet foncé
+    backgroundColor: colors.purpleDark, //violet foncé
     height: 70,
     paddingHorizontal: 16,
     justifyContent: "space-between",
@@ -173,7 +160,7 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 60,
-    backgroundColor: "#510059",
+    backgroundColor: colors.purpleDark,
     position: "absolute",
     bottom: 10,
     right: 10,
@@ -184,15 +171,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black background
+    backgroundColor: "transparent",
   },
-
-  // Styles for the input fields in the modal
+  modalContent: {
+    width: "80%",
+    padding: 20,
+    backgroundColor: colors.purpleLight,
+    borderRadius: 10,
+  },
   input: {
-    width: 200,
     height: 40,
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "white",
     borderRadius: 5,
     padding: 10,
     marginBottom: 10,
@@ -201,7 +191,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     marginTop: 15,
     fontWeight: "normal",
-    color: "#fff", // blanc
+    color: "white",
   },
   icon: {
     position: "absolute",
@@ -209,28 +199,27 @@ const styles = StyleSheet.create({
     marginTop: 0,
   },
   content: {
-    //prends tt la place dans l'appli
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  text: {
-    color: "rgba(78,182,153,1)",
-    fontSize: 24,
-    fontWeight: "normal",
   },
   buttonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
   },
-
-  // Styles for the "Retour" text
-  retourText: {
-    color: "black",
-    fontSize: 18,
-    fontWeight: "bold",
-    marginRight: 20,
+  buttonText: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "300",
+    textAlignVertical: "bottom",
+  },
+  modalTitle: {
+    color: "white",
+    fontSize: 30,
+    alignSelf: "center",
+    marginBottom: 20,
+    fontFamily:'RobotoBoldItalic_700'
   },
 });
 
