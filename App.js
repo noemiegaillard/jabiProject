@@ -3,54 +3,51 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
-  Modal,
   TouchableOpacity,
-  TextInput,
-  Button,
 } from "react-native";
-import FontAwesome from "react-native-vector-icons/FontAwesome";
-import Task from "./Task";
-import colors from "./assets/themes.js";
-import { useCustomFonts } from './assets/fonts.js';
+import Icons from "./assets/icons"; 
+import TaskList from "./components/TaskList";
+import colors from "./assets/colors";
+import CreateTask from "./modals/createTask";
 
-
+import { useCustomFonts } from "./assets/fonts/roboto.js";
 
 const App = () => {
-
   const [modalVisible, setModalVisible] = useState(false);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [date, setDate] = useState("");
+  const [Tasks, setTasks] = useState([]);
+  const [selectedTask, setSelectedTask] = useState(null);
 
   const openModal = () => {
     setModalVisible(true);
   };
 
-  const handleSaveTask = () => {
-    if (
-      title.trim() === "" ||
-      description.trim() === "" ||
-      date.trim() === ""
-    ) {
-      alert("You have one field or more that isn't been fill.");
-      return;
-    }
-    const newTask = {
-      id: String(Math.random()), // Generate a random ID (you can use a proper ID generation logic)
-      title: title,
-      description: description,
-      date: date,
-    };
-    setTasks((prevTasks) => [...prevTasks, newTask]);
-    setModalVisible(false);
-    setTitle("");
-    setDescription("");
-    setDate("");
+  const deleteTask = (taskId) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
   };
-  const [Tasks, setTasks] = useState([]);
-  const fontsLoaded = useCustomFonts();
 
+  const handleSaveTask = (newTask) => {
+    if (selectedTask) {
+      // Si selectedTask existe, c'est une mise à jour de tâche
+      setTasks((prevTasks) =>
+        prevTasks.map((task) =>
+          task.id === selectedTask.id ? { ...task, ...newTask } : task
+        )
+      );
+    } else {
+      // Sinon, c'est une nouvelle tâche
+      setTasks((prevTasks) => [...prevTasks, newTask]);
+    }
+    setSelectedTask(null);
+    setModalVisible(false);
+  };
+  
+  const handleEditTask = (task) => {
+    setSelectedTask(task);
+    setModalVisible(true);
+  };
+
+  
+  const fontsLoaded = useCustomFonts();
   if (!fontsLoaded) {
     return <></>;
   }
@@ -60,80 +57,19 @@ const App = () => {
         <Text style={styles.appBarTitle}>Jabi Task</Text>
       </View>
       <View style={styles.content}>
-        <FlatList
-          data={Tasks}
-          renderItem={({ item }) => (
-            <Task
-              title={item.title}
-              description={item.description}
-              date={item.date}
-            />
-          )}
-          keyExtractor={(item) => item.id}
-        />
+      <TaskList tasks={Tasks} onDelete={deleteTask} onEdit={handleEditTask} />
         {!modalVisible && (
           <TouchableOpacity style={styles.circle} onPress={openModal}>
-            <FontAwesome
-              name="pencil"
-              size={24}
-              color="white"
-              style={styles.icon}
-            />
+          {Icons.pencil("white",24)}
+          
           </TouchableOpacity>
         )}
-        <View>
-          <Modal
-            visible={modalVisible}
-            animationType="slide"
-            transparent={true}
-          >
-            <View style={styles.modalContainer}>
-              <View style={styles.modalContent}>
-                <Text style={styles.modalTitle}>Create a new Task : </Text>
-
-                {/* Your form or inputs */}
-                <TextInput
-                  placeholder="Title"
-                  color={colors.whitebackground}
-                  value={title}
-                  onChangeText={(text) => setTitle(text)}
-                  style={styles.input}
-                />
-                <TextInput
-                  color={colors.whitebackground}
-                  placeholder="Description"
-                  value={description}
-                  onChangeText={(text) => setDescription(text)}
-                  style={styles.input}
-                />
-                <TextInput
-                  color={colors.whitebackground}
-                  placeholder="Date"
-                  value={date}
-                  onChangeText={(text) => setDate(text)}
-                  style={styles.input}
-                />
-
-                {/* Save button */}
-                <View style={styles.buttonsContainer}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      setModalVisible(false);
-                      setTitle("");
-                      setDescription("");
-                      setDate("");
-                    }}
-                  >
-                    <Text style={styles.buttonText}>Retour</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity onPress={handleSaveTask}>
-                    <Text style={styles.buttonText}>Save</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </Modal>
-        </View>
+        <CreateTask
+        visible={modalVisible}
+        onClose={() => {setSelectedTask(null); setModalVisible(false);}}
+        onSave={handleSaveTask}
+        selectedTask={selectedTask}
+      />
       </View>
     </View>
   );
@@ -142,16 +78,13 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.whitebackground, //vert clair
-  },
-  descriptionContainer: {
-    alignSelf: "flex-end", // Alignement de la description au bas à droite
+    backgroundColor: colors.whitebackground, 
   },
 
   appBar: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: colors.purpleDark, //violet foncé
+    backgroundColor: colors.darkPurple,
     height: 70,
     paddingHorizontal: 16,
     justifyContent: "space-between",
@@ -160,32 +93,12 @@ const styles = StyleSheet.create({
     width: 70,
     height: 70,
     borderRadius: 60,
-    backgroundColor: colors.purpleDark,
+    backgroundColor: colors.darkPurple,
     position: "absolute",
     bottom: 10,
     right: 10,
     justifyContent: "center",
     alignItems: "center",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "transparent",
-  },
-  modalContent: {
-    width: "80%",
-    padding: 20,
-    backgroundColor: colors.purpleLight,
-    borderRadius: 10,
-  },
-  input: {
-    height: 40,
-    borderWidth: 1,
-    borderColor: "white",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
   },
   appBarTitle: {
     fontSize: 25,
@@ -202,24 +115,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  buttonsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    width: "100%",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 20,
-    fontWeight: "300",
-    textAlignVertical: "bottom",
-  },
-  modalTitle: {
-    color: "white",
-    fontSize: 30,
-    alignSelf: "center",
-    marginBottom: 20,
-    fontFamily:'RobotoBoldItalic_700'
   },
 });
 
