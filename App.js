@@ -27,14 +27,12 @@ const App = () => {
 
   const handleSaveTask = (newTask) => {
     if (selectedTask) {
-      // Si selectedTask existe, c'est une mise à jour de tâche
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task.id === selectedTask.id ? { ...task, ...newTask } : task
         )
       );
     } else {
-      // Sinon, c'est une nouvelle tâche
       setTasks((prevTasks) => [...prevTasks, newTask]);
     }
     setSelectedTask(null);
@@ -51,6 +49,7 @@ const App = () => {
   if (!fontsLoaded) {
     return <></>;
   }
+  //main app
   return (
     <View style={styles.container}>
       <View style={styles.appBar}>
@@ -58,12 +57,14 @@ const App = () => {
       </View>
       <View style={styles.content}>
       <TaskList tasks={Tasks} onDelete={deleteTask} onEdit={handleEditTask} />
+      {/* enlève le boutoon si jamais on a cliqué dessus  */}
         {!modalVisible && (
           <TouchableOpacity style={styles.circle} onPress={openModal}>
           {Icons.pencil("white",24)}
           
           </TouchableOpacity>
         )}
+        {/* Ouverture du modal au clique du bouton */}
         <CreateTask
         visible={modalVisible}
         onClose={() => {setSelectedTask(null); setModalVisible(false);}}

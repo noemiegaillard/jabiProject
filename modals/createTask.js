@@ -54,8 +54,6 @@ const CreateTask = ({ visible, onClose, onSave, selectedTask }) => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{selectedTask ? "Edit Task :" : "Create a New Task :"}  </Text>
-
-            {/* Your form or inputs */}
             <TextInput
               placeholder=" Write the title... *"
               color={colors.whitebackground}

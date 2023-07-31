@@ -13,7 +13,6 @@ const ShowOptions = ({ visible, onClose, onEdit, onDelete, onFinish }) => {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>What do you want to do: </Text>
-
             <TouchableOpacity onPress={onEdit}>
               <Text style={styles.optionText}>&gt; Edit Task</Text>
             </TouchableOpacity>

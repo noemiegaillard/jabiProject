@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Modal } from "react-native";
 import colors from "../assets/colors";
 import Icons from "../assets/icons"; 
-import ShowOptions from "../modals/showOptions"; // Importez le composant ShowOptionsModal
+import ShowOptions from "../modals/showOptions";
 
-const Task = ({ title, description, onDelete,onEdit, taskId }) => {
+const Task = ({ title, description, onDelete ,onEdit , taskId }) => {
   const [showOptions, setShowOptions] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
 
@@ -24,7 +24,6 @@ const Task = ({ title, description, onDelete,onEdit, taskId }) => {
      
     });
     handleCloseOptions();
-
   };
 
   const handleFinish = () => {
