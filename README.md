@@ -12,14 +12,8 @@ J'ai utilisée expo pour pouvoir tester le projet sur un émulateur. J'ai travai
 * /modals : Contient les modals pour la création et l'édition des tâches.
 * /assets : Contient les ressources telles que les polices, les couleurs et les icônes utilisées dans l'application.
 
-## avancée souhaité: 
+## Avancée souhaité: 
 J'aurais bien aimé ajouter un DateTimePicker pour définir une date de fin de la task et donc passer la task en terminé si elle était dépassé mais j'ai pas eu le temps de finir et j'ai préféré rendre clair le reste. 
-
-## Outils utilisés:
-* Internet: (stackoverflow et autre) pour régler des problèmes pour l'installation, comprendre le fonctionnement de react native et régler des problèmes lors du projet.
-* Youtube: pour voir des videos de personne codant en react et voir un peu les possibilités.
-* Chatgpt: pour poser des questions sur des choses que je ne comprenais pas bien tel que le useState ou demander les bonnes pratiques en react etc..
-* Fork: pour gérer le lien avec github (push,pull etc..).
 
 ## images type de L'application: 
 1) image de la vue de base de l'application avec une FlatList avec les task. Si terminés elles sont en beige autrement en vert eau.
